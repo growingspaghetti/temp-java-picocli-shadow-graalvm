@@ -3,12 +3,44 @@
  */
 package ryoji.project;
 
-public class App {
-    public String getGreeting() {
-        return "Hello World!";
+import picocli.CommandLine;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.concurrent.Callable;
+
+@CommandLine.Command(name = "app", subcommands = {})
+public class App implements Callable<Integer> {
+    @CommandLine.Option(names = {"-h", "--help"}, description = "show this help", usageHelp = true)
+    boolean showHelp;
+
+    @CommandLine.Option(names = {"-v", "--version"}, description = "show version")
+    boolean showVersion;
+
+    private void showVersion() {
+        URL u = this.getClass().getResource("/git.properties");
+        try (InputStream input = Objects.requireNonNull(u).openStream()) {
+            Properties prop = new Properties();
+            prop.load(input);
+            System.out.println("Version: " + prop.getProperty("git.tags"));
+            System.out.println("Commit id: " + prop.getProperty("git.commit.id"));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+    @Override
+    public Integer call() {
+        if (showVersion) {
+            showVersion();
+        }
+        return 0;
+    }
+
+    public static void main(String... args) {
+        System.exit(new CommandLine(new App()).execute(args));
     }
 }
