@@ -10,6 +10,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'java'
     id 'com.gorylenko.gradle-git-properties' version '2.2.4'
+    id 'org.mikeneck.graalvm-native-image' version '1.4.1'
 }
 
 java {
@@ -33,4 +34,15 @@ dependencies {
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+nativeImage {
+    graalVmHome = "${System.getProperty('user.home')}/.sdkman/candidates/java/21.2.0.r11-grl/"
+    mainClass = 'ryoji.project.App'
+    executableName = 'app'
+    arguments(
+            '--no-fallback',
+            '-H:IncludeResources=.*properties',
+            '--enable-url-protocols=https'
+    )
 }
