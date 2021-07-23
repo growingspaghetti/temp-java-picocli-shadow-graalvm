@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
-@CommandLine.Command(name = "app", subcommands = {})
+@CommandLine.Command(name = "app", subcommands = {Cat.class, Wget.class})
 public class App implements Callable<Integer> {
     @CommandLine.Option(names = {"-h", "--help"}, description = "show this help", usageHelp = true)
     boolean showHelp;
